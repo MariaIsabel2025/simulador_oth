@@ -2,7 +2,7 @@ import numpy as np
 import scipy
 
 
-def pfa_os(k,M,T):
+def pfa_os(k:int,M:int,T:float) -> float:
   """
   Parámetros:
     k: estadístico de orden (entre 1 y M)
@@ -17,7 +17,14 @@ def pfa_os(k,M,T):
 
   ####################
 
-def calcula_t_para_pfa(M,k=None,pfa=1e-6):  #por defecto la pfa = 1e-6
+def calcula_t_para_pfa(M:int,k:int|None = None,pfa:float=1e-6) -> float:  #por defecto la pfa = 1e-6
+  """"
+  Parámetros:
+    M: cantidad de celdas en la ventana
+    k: estadístico de orden (entre 1 y M), por defecto (M*6)//7
+    pfa: Probabilidad de falsa alarma objetivo
+  Return: el factor de escala para obtener la pfa objetivo
+  """
   if k is None:
     k=(M*6)//7
   return scipy.optimize.newton(lambda x:pfa_os(k,M,x)-pfa,1,maxiter=50000)

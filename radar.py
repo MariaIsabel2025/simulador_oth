@@ -1,6 +1,14 @@
 import numpy as np
 import scipy
 
+def interpola_sinc(secuencia,tiempo_muestreo):
+    """Interpolación sinc $\dfrac{\sin(\pi x)}{\pi x}$"""
+    secuencia = np.reshape(secuencia,(1,-1))
+    n = np.reshape(np.arange(secuencia.size),(1,-1))
+    def f(t):
+        t = np.reshape(t,(-1,1))
+        return np.reshape(np.sum(secuencia*np.sinc(t/tiempo_muestreo-n),axis=1),(-1,))
+    return f
 
 def mru(posicion_inicial,velocidad):
   def posicion(t):
@@ -39,17 +47,9 @@ class Codigo_pseudoaleatorio(object):
         self.bits_codigo = bits_codigo
         self.merito=merito
     sx = np.array([-1.0,1.0])[self.bits_codigo]
-    self.muestras_codigo = np.kron(sx,[1]*numero_muestras_bit)
+    interpolado = interpola_sinc(sx,numero_muestras_bit)
+    self.muestras_codigo = interpolado(np.arange(-numero_muestras_bit,(numero_bits+1)*numero_muestras_bit))
     #self.autocorrelacion = np.correlate(self.muestras_codigo,self.muestras_codigo,'full')
-
-def interpola_sinc(secuencia,tiempo_muestreo):
-    """Interpolación sinc $\dfrac{\sin(\pi x)}{\pi x}$"""
-    secuencia = np.reshape(secuencia,(1,-1))
-    n = np.reshape(np.arange(secuencia.size),(1,-1))
-    def f(t):
-        t = np.reshape(t,(-1,1))
-        return np.reshape(np.sum(secuencia*np.sinc(t/tiempo_muestreo-n),axis=1),(-1,))
-    return f
 
 class Canal_radar(object):
   """ Código que recibiría un radar: señal + ruido
