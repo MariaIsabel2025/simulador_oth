@@ -1,4 +1,5 @@
 @startuml
+left to right direction
 class Canal_radar{
 + frec_muestreo
 + frec_portadora
@@ -26,7 +27,7 @@ class Simulador_escenario{
 + exploracion(escenario,tiempo_inicial,periodo_de_repeticion_de_pulso,pulsos_por_exploracion,snr_rango_max)
 + simula(escenario, tiempo_inicial, periodo_de_repeticion_de_pulso, pulsos_por_exploracion, numero_de_exploraciones, snr_rango_max)
 }
-Simulador_escenario --> Canal_radar : canal
+Simulador_escenario -right-> Canal_radar : "canal    "
 class Codigo_pseudoaleatorio{
 + semilla
 + numero_bits
