@@ -1,0 +1,23 @@
+@startuml
+start
+partition "Usando módulo radar" {
+:Crea Codigo_pseudoaleatorio "codigo";
+:Crea Canal_radar "canal" con codigo;
+:Crea Compresor_pulso "compresor" con canal;
+:Crea Simulador_escenario "simulador" con canal;
+:Crea escenario;
+:Simula una secuencia de exploraciones con simulador\n "exploraciones";
+:Calcula correlación para una de las exploraciones "correlacion_1";
+}
+partition "Usando módulo cfar"{
+:Define los parámetros k y ancho_ventana de algoritmo OS-CFAR;
+:Calcula el parámetro T de OS-CFAR acorde a una\nprobabilidad de falsa alarma dada;
+:Ejecuta el algoritmo OS-CFAR sobre correlacion_1;
+:Grafica correlacion_1, umbral OS-CFAR y detecciones;
+}
+partition "Usando módulo tracking"{
+:Define parámetros de k y ancho_ventana de algoritmo OS-CFAR;
+:Calcula parámetor T de OS-CFAR;
+:Crea GestorDeTrayectos "seguimiento";
+}
+@enduml
