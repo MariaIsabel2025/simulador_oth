@@ -1,0 +1,48 @@
+@startuml
+left to right direction
+class Canal_radar{
++ frec_muestreo
++ frec_portadora
++ pulso
++ pulso_interpolado
++ guarda
++ rango_maximo
++ rng
++ rango_por_unidad_de_retardo
++ muestras_por_pulso
++ rango_minimo_sin_guarda
++ rango_minimo
++ amplitud_de_referencia_rango_minimo
++ muestras_escucha
++ vector_rx
++ Canal_radar(frec_muestreo,frec_portadora,pulso,guarda,rango_maximo,semilla_rng)
++ nueva_exploracion()
++ agrega_eco(rango_objetivo)
++ agrega_ruido(snr_rango_maximo)
++ copia_vector_rx()
++ obt_tiempos_muestras_escucha()
+}
+class Simulador_escenario{
++ Simulador_escenario(canal)
++ exploracion(escenario,tiempo_inicial,periodo_de_repeticion_de_pulso,pulsos_por_exploracion,snr_rango_max)
++ simula(escenario, tiempo_inicial, periodo_de_repeticion_de_pulso, pulsos_por_exploracion, numero_de_exploraciones, snr_rango_max)
+}
+Simulador_escenario -right-> Canal_radar : "canal    "
+class Codigo_pseudoaleatorio{
++ semilla
++ numero_bits
++ numero_muestras_bit
++ bits_codigo
++ merito
++ muestras_codigo
++ Codigo_pseudoaleatorio(semilla, numero_bits, numero_muestras_bit)
+}
+class Compresor_pulso{
++ pulso
++ rango_minimo_km
++ frec_muestreo
++ Compresor_pulso(canal_radar)
++ correlacion(muestras_rx)
++ amplitud_cuadrada_correlacion(muestras_rx)
+}
+@enduml
