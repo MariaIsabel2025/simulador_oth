@@ -17,7 +17,16 @@ partition "Usando módulo cfar"{
 }
 partition "Usando módulo tracking"{
 :Define parámetros de k y ancho_ventana de algoritmo OS-CFAR;
-:Calcula parámetor T de OS-CFAR;
+:Calcula parámetro T de OS-CFAR;
 :Crea GestorDeTrayectos "seguimiento";
+partition Para cada exploracion "ex" en exploraciones{
+:Calcula amplitud cuadrada "a2" de ex con compresor;
+:Determina los rangos de los picos
+con OS-CFAR (k,T,ancho_ventana);
+:Con seguimiento actualiza trayectos en base a rangos;
 }
+:Obtiene de seguimiento los trayectos;
+:Presenta los trayectos en un gráfico posición vs tiempo;
+}
+end
 @enduml
