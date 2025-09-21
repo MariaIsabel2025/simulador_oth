@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+
+class KF{
+- x
+- accel_variance
+- P
++ predict(dt)
++ update(valor,varianza)
++ cov()
++ mean()
++ pos()
++ vel()
+}
+
+class GestorDeTrayectos{
+- trayectos
+- tiempo
++ actualizaTrayectos(detecciones, dt, varDet, varAcel, tol, tolPred)
++ copiaTrayectos()
+}
+@enduml
