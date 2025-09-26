@@ -1,0 +1,43 @@
+@startuml
+title detectarOsCfar - Diagrama de flujo alto nivel con entradas y salidas
+
+skinparam rectangle {
+  Shadowing false
+}
+start
+
+:Entrada: radar (dict);
+:Entrada: correlacion (array);
+:Entrada: detector (dict);
+
+partition Inicializacion {
+  :Asegurar radar["rango_por_unidad_de_retardo"] (por defecto 1.5e8);
+  :Asegurar detector["k"] (por defecto ((ancho_ventana-1)*6)//7);
+  :Asegurar detector["celdas_guarda"] (por defecto 0);
+  :Inicializar rangos = [];
+  :Inicializar detalle = {posiciones:[], umbrales:[], centros:[]};
+  :Calcular rango_muestra = radar["rango_por_unidad_de_retardo"]/radar["frec_muestreo"];
+}
+
+:Iterar posiciones desde 0 hasta pos_max;
+repeat
+  :Construir ventana de análisis alrededor de la posición;
+  :Extraer centro y entorno (sin centro ni celdas de guarda);
+  :Calcular estadistico = k-ésimo orden sobre entorno;
+  :Calcular umbral = estadistico * detector["T"];
+  :Guardar umbral y centro en detalle;
+  if (centro > umbral) then (sí)
+    :Registrar posición en detalle["posiciones"];
+    :Calcular rango asociado y añadir a rangos;
+  else (no)
+    :No hay detección en esta ventana;
+  endif
+  :Avanzar a la siguiente posición;
+repeat while (quedan posiciones por analizar)
+
+partition Salida {
+  :Salida: rangos (lista de L);
+  :Salida: detalle {posiciones, umbrales, centros};
+}
+stop
+@enduml

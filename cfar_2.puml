@@ -1,0 +1,23 @@
+@startuml
+:Datos de entrada
+- radar (parámetros)
+- correlación
+- detector (configuración);
+while (Para cada posición en la\nseñal de correlación) is (siguiente)
+:Extraer ventana (entorno + centro)
+- excluir celdas de guarda
+- identificar celda central;
+:Ordenar entorno y tomar la k-ésima muestra
+-> estadístico de orden;
+:Calcular umbral dinámico:
+umbral = estadístico * T;
+if (centro > umbral) then (si)
+:Blanco derectado:
+guardar posición y rango;
+else (no)
+endif
+endwhile (fin)
+:Resultados finales:
+- Rangos detectados
+- Detalle (umbrales, posiciones, centros);
+@enduml
