@@ -1,0 +1,27 @@
+@startuml
+' Definición de clases
+class KF {
+    - _x: np.array
+    - _P: np.array
+    - _accel_variance: float
+    + __init__(initial_x: float, initial_v: float, accel_variance: float)
+    + predict(dt: float)
+    + update(meas_value: float, meas_variance: float)
+    + cov: np.array
+    + mean: np.array
+    + pos: float
+    + vel: float
+}
+
+class GestorDeTrayectos {
+    - _trayectos: list
+    - _tiempo: float
+    + __init__()
+    + actualizaTrayectos(detecciones, dt, varDet, varAcel, tol=1, tolPred=10)
+    + copiaTrayectos()
+}
+
+' Relaciones
+GestorDeTrayectos "1" *-- "*" KF : usa
+
+@enduml
