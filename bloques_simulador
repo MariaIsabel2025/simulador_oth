@@ -1,0 +1,23 @@
+@startuml
+skinparam rectangle {
+  Rounded true
+  Shadowing false
+}
+
+rectangle "Configuración" as Config
+rectangle "Simulador de\nexploración" as Sim
+rectangle "Compresor de\npulso" as Comp
+rectangle "Integración\nCoherente" as Int
+rectangle "Detector\nCFAR" as CFAR
+rectangle "Seguimiento" as Seg
+
+' Configuración encima de Simulador
+Config -down-> Sim : Código
+Config -down-> Sim : Escenario
+
+Sim -> Comp : Señal recibida\nsintética
+Comp -> Int : ACF
+Int -> CFAR
+CFAR -> Seg : Detecciones [t_i,...]
+Seg -> . : Trayectorias
+@enduml
