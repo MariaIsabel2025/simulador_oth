@@ -46,8 +46,9 @@ class Codigo_pseudoaleatorio(object):
       if merito > self.merito:
         self.bits_codigo = bits_codigo
         self.merito=merito
-    self.sx = np.array([-1.0,1.0])[self.bits_codigo]
-    interpolado = interpola_sinc(sx,numero_muestras_bit)
+    sxopt = np.array([-1.0,1.0])[self.bits_codigo]
+    interpolado = interpola_sinc(sxopt,numero_muestras_bit)
+    self.sx = sxopt
     self.muestras_codigo = interpolado(np.arange(-numero_muestras_bit,(numero_bits+1)*numero_muestras_bit))
     #self.autocorrelacion = np.correlate(self.muestras_codigo,self.muestras_codigo,'full')
 
