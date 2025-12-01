@@ -46,12 +46,12 @@ def detectarOsCfar(radar,correlacion,detector):
     k: orden del estadístico, debe ser menor que ancho_ventana-1, si está ausente usa ((ancho_ventana-1)*6)//7
     celdas_guarda: número de celdas de guarda (no se cuentan para el ancho_ventana, como tampoco la muestra central). Por defecto 0
 
-  Retorna rangos,detalle
-    rangos: lista con rangos de los picos detectados (en L)
+  Retorna detecciones,detalle
+    detecciones: lista con rangos de los picos detectados (en L)
     detalle: diccionario con
-      posiciones lista con los indices de los picos dentro del vector de amplitudes de correlacion
+      rango : rangos correspondientes a muestras de la correlación
       umbrales : lista de umbrales calculados para cada posición de ventana deslizante
-      centros : lista de posiciones centrales de ventana correspondientes a umbrales
+      centros : lista de rangos correspondientes a los umbrales
   """
   def obtener_ventana(posicion):
     """
@@ -63,7 +63,7 @@ def detectarOsCfar(radar,correlacion,detector):
     der:
     entorno: array con las celdas del entorno de comparación (sin el centro y sin celdas de guarda)
 
-    retorna: cent, entorno, posicion de la muestra cent en la correlacion
+    retorna: cent, entorno, indice de la muestra cent en la correlacion
     """
     guarda = detector["celdas_guarda"]
     ancho_ventana = detector["ancho_ventana"]
@@ -83,21 +83,26 @@ def detectarOsCfar(radar,correlacion,detector):
     detector["k"]=((detector["ancho_ventana"]-1)*6)//7
   if "celdas_guarda" not in detector:
     detector["celdas_guarda"]=0
-  rangos = []
-  detalle = {
-    "posiciones":[],
-    "umbrales":[],
-    "centros":[]}
-
+  detecciones = []
   rango_muestra = radar["rango_por_unidad_de_retardo"]/radar["frec_muestreo"]
+  rango_de_indice = lambda i: radar["distancia_ciega"] + i*rango_muestra
+
+  detalle = {
+    "rango":np.linspace(rango_de_indice(0),
+                             rango_de_indice(correlacion.size-1),
+                             correlacion.size),
+    "umbrales":[],
+    "centros":[],
+    "indices_detecciones":[]}
+
 
   for pos in range(correlacion.size-(detector["ancho_ventana"]+1+2*detector["celdas_guarda"])):
     centro,entorno,pos_centro = obtener_ventana(pos)
     estadistico = np.sort(entorno)[detector["k"]-1] # estadísitco 1 (min) corresponde a pos 0
     umbral = estadistico * detector["T"]
     detalle["umbrales"].append(umbral)
-    detalle["centros"].append(pos_centro)
+    detalle["centros"].append(rango_de_indice(pos_centro))
     if (centro > umbral): #comparación de cada celda a estudiar y el umbral
-      detalle["posiciones"].append(pos_centro)  # si True, cambia 0 por 1 en la posición
-      rangos.append((pos_centro-(radar["ancho_pulso"]-1))*rango_muestra+radar["distancia_ciega"])
-  return rangos,detalle 
+      detecciones.append(rango_de_indice(pos_centro))
+      detalle["indices_detecciones"].append(pos_centro)
+  return detecciones,detalle 
