@@ -236,7 +236,7 @@ class Compresor_pulso(object):
     Correlaciona un vector de muestras recibidas con la forma del pulso
     transmitido
     """
-    acf = np.correlate(muestras_rx,self.pulso,"full")
+    acf = np.correlate(muestras_rx,self.pulso,"full")[self.pulso.size-1:]
     return acf
   def amplitud_cuadrada_correlacion(self,muestras_rx):
     cor = np.abs(self.correlacion(muestras_rx))
