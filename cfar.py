@@ -49,14 +49,15 @@ def detectarOsCfar(radar,correlacion,detector):
   Retorna detecciones,detalle
     detecciones: lista con rangos de los picos detectados (en L)
     detalle: diccionario con
-      rango : rangos correspondientes a muestras de la correlación
-      umbrales : lista de umbrales calculados para cada posición de ventana deslizante
-      centros : lista de rangos correspondientes a los umbrales
+      rangos : rangos correspondientes a muestras de la correlación
+      umbrales : lista de umbrales calculados para cada ventana analizada 
+      rangos_celda_de_prueba : lista de rangos correspondientes a cada celda de prueba analizada
+      indices_detecciones : lista de índices en la correlación donde se detectaron picos
   """
   def obtener_ventana(posicion):
     """
     Atributos:
-    ## offset_central: mitad de ancho de ventana
+    offset_central: mitad de ancho de ventana
     ventana: array con las celdas a analizar
     izq:
     cent: celda de análisis
@@ -88,21 +89,21 @@ def detectarOsCfar(radar,correlacion,detector):
   rango_de_indice = lambda i: radar["distancia_ciega"] + i*rango_muestra
 
   detalle = {
-    "rango":np.linspace(rango_de_indice(0),
+    "rangos":np.linspace(rango_de_indice(0),
                              rango_de_indice(correlacion.size-1),
                              correlacion.size),
     "umbrales":[],
-    "centros":[],
+    "rangos_celda_de_prueba":[],
     "indices_detecciones":[]}
 
 
   for pos in range(correlacion.size-(detector["ancho_ventana"]+1+2*detector["celdas_guarda"])):
-    centro,entorno,pos_centro = obtener_ventana(pos)
+    centro,entorno,indice_celda_de_prueba = obtener_ventana(pos)
     estadistico = np.sort(entorno)[detector["k"]-1] # estadísitco 1 (min) corresponde a pos 0
     umbral = estadistico * detector["T"]
     detalle["umbrales"].append(umbral)
-    detalle["centros"].append(rango_de_indice(pos_centro))
+    detalle["rangos_celda_de_prueba"].append(rango_de_indice(indice_celda_de_prueba))
     if (centro > umbral): #comparación de cada celda a estudiar y el umbral
-      detecciones.append(rango_de_indice(pos_centro))
-      detalle["indices_detecciones"].append(pos_centro)
+      detecciones.append(rango_de_indice(indice_celda_de_prueba))
+      detalle["indices_detecciones"].append(indice_celda_de_prueba)
   return detecciones,detalle 
