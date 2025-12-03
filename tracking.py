@@ -84,7 +84,7 @@ class GestorDeTrayectos(object):
         dt : paso de tiempo
         varDet : varianza del detector en su estimación de rango
         varAcel : varianza de la aceleración del blanco (para nuevos trayectos)
-        tol : tolerancia en desviaciones estandar
+        tol : Valor crítico para determinar la región de confianza de la predicción de la posición para asignar detección a una trayectoria 
         tolPred : Si la predicción tiene un desvío estandar mayor que
                   (varDet**.5 * tolPred) el trayecto deja de considerarse activo
     """
